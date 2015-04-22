@@ -48,7 +48,6 @@ function generateLetter(numLetter){
     temp = String.fromCharCode(97 + Math.floor(Math.random()*26));
     array.push(temp);
   }
-
   return array;
 };
 
@@ -58,6 +57,7 @@ app.get('/:num', function(req,res){
   var array =[];
   numLetter = req.params.num;
   array = generateLetter(numLetter);
+  res.json(array);
   console.log(array);
 });
 
