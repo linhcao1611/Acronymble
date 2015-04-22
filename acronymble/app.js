@@ -10,6 +10,20 @@ var users = require('./routes/users');
 
 var app = express();
 
+var mongoose =require('mongoose');
+mongoose.connect('mongodb://localhost/acronymble');
+var Schema = mongoose.Schema;
+
+var UserSchema = new Schema({
+  username: String,
+  password: String,
+  points: Number,
+  rounds_played: Number,
+  rank: String
+});
+
+var UserModel = mongoose.model("UserSchema", UserSchema);
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -24,6 +38,32 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+
+
+// source: http://stackoverflow.com/questions/16123346/generate-random-letters-in-javascript-and-count-how-many-times-each-letter-has-o
+function generateLetter(numLetter){
+  var index, temp;
+  var array = [];
+  for(index=0; index < numLetter; index++){
+    temp = String.fromCharCode(97 + Math.floor(Math.random()*26));
+    array.push(temp);
+  }
+
+  return array;
+};
+
+// for testing purpose
+app.get('/:num', function(req,res){
+  var numLetter;
+  var array =[];
+  numLetter = req.params.num;
+  array = generateLetter(numLetter);
+  console.log(array);
+});
+
+
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
