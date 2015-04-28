@@ -7,7 +7,6 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var UserSchema = new Schema({
-	_id     : Number,
 	username: String,
 	password: String,
 	date: { type: Date, default: Date.now },

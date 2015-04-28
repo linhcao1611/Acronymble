@@ -1,0 +1,8 @@
+extends layout
+
+block content
+	h1= title
+		form(name="signup", action="/users/new", method="post")
+			input(type="text", name="username")
+			input(type="password", name="password")
+			input(type="submit", value="signup")
