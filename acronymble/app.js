@@ -12,17 +12,8 @@ var app = express();
 
 var mongoose =require('mongoose');
 mongoose.connect('mongodb://localhost/acronymble');
-var Schema = mongoose.Schema;
 
-var UserSchema = new Schema({
-  username: String,
-  password: String,
-  points: Number,
-  rounds_played: Number,
-  rank: String
-});
 
-var UserModel = mongoose.model("UserSchema", UserSchema);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -60,10 +51,6 @@ app.get('/:num', function(req,res){
   res.json(array);
   console.log(array);
 });
-
-
-
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
