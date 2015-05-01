@@ -6,23 +6,24 @@ var express = require("express");
 var router = express.Router();
 var Game = require("../models/game");
 
+
+// global variable to keep all phrase submit by player
+var phrases=[];
 // when user submit a phrase
-router.post("/phraseSubmit", function (req, res) {
+router.post("/phrase", function(req, res){
+	user = req.body.user;
+	phrase = req.body.phrase;
+	phrases.push({user,phrase});
+});
 
-	var new_game = new Game({
-		//user: req.body.user,
-		//phrase: req.body.phrase
-	});
+// keep track voting
 
 
+// end_game event
+router.post("/endGame", function (req, res) {
+// loop through the phrases array and find the winner
 
-	new_game.save(function (err) {
-		if (err) {
-			console.log("error saving game object : " + err);
-		}
-		console.log("the game has been saved");
-		return res.redirect("/");
-	}); 
+
 });
 
 module.exports = router;
