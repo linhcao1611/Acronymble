@@ -29,8 +29,14 @@ router.post("/vote", function(req, res){
 // end_game event
 router.post("/endGame", function (req, res) {
 // loop through the phrases array and find the winner
-
-
+	var i,
+		win = phrases[0];
+	for(i = 1; i < phrases.length; i++){
+		if(phrases[i][2]>win[2]){
+			win = phrases[i];
+		}
+	}
+	res.json({winner: win[0], win_phrase: win[1], numOfVote: phrases[2] );
 });
 
 module.exports = router;
