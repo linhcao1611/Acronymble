@@ -11,13 +11,20 @@ var Game = require("../models/game");
 var phrases=[];
 // when user submit a phrase
 router.post("/phrase", function(req, res){
-	user = req.body.user;
+	author = req.body.user;
 	phrase = req.body.phrase;
-	phrases.push({user,phrase});
+	phrases.push({author,phrase,0});
 });
 
 // keep track voting
-
+router.post("/vote", function(req, res){
+	author = req.body.author;
+	phrase = req.body.phrase;
+	// find and update number of vote for a phrase
+	var index = phrases.indexOf({author,phrase});
+	// update voting
+	phrases[index][2]++;
+})
 
 // end_game event
 router.post("/endGame", function (req, res) {
