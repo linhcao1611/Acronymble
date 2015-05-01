@@ -1,6 +1,10 @@
 var main = function (toDoObjects) {
     "use strict";
-    var socket = io.connect("http://localhost:3000");
+    var socket;
+
+    var app = angular.module("play_game", []);
+
+    socket = io.connect("http://localhost:3000");
     $("#test").on("click", function() {
     	socket.emit("start_game");
     });
