@@ -6,7 +6,7 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-var Gamechema = new Schema({
+var GameSchema = new Schema({
 	acronyms: String,
 	phrases: Object,
 	winner: String,
