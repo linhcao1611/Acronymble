@@ -8,11 +8,11 @@ var User = require("../models/user");
 
 
 router.get("/", function (req, res) {
-  res.render("login", { title: "login to Acronymble" });
+  res.render("login.html", { title: "login to Acronymble" });
 });
 
 router.get("/signup", function (req, res) {
-  res.render("signup", { title: "Signup on Acronymble to start playing" });
+  res.render("signup.html", { title: "Signup on Acronymble to start playing" });
 });
 
 // create new user
@@ -43,7 +43,7 @@ router.post("/login", function (req, res) {
 	User.findOne({username: req.body.username, password: req.body.password}, function (err, user) {
 		if (err || !user) {
 			console.log("user not found");
-			res.render("login", { title: "login to Acronymble", message: "username or password are invalid" });
+			res.render("login.html", { title: "login to Acronymble", message: "username or password are invalid" });
 		} else {
 			req.session.current_user = user;
 			return res.redirect("/");
