@@ -28,6 +28,7 @@ mongoose.connect('mongodb://localhost/acronymble');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
+app.set("view engine", "ejs");
 app.engine('html', require('ejs').renderFile);
 
 // uncomment after placing your favicon in /public
@@ -61,20 +62,11 @@ function generateLetter(numLetter){
   return array;
 };
 
-// for testing purpose
-app.get('/:num', function(req,res){
-  var numLetter;
-  var array =[];
-  numLetter = req.params.num;
-  array = generateLetter(numLetter);
-  res.json(array);
-  console.log(array);
-});
-
 // testing listening to an event
 io.sockets.on("connection", function (socket) {
   socket.on("start_game", function () {
     console.log( " received from client: game started ");
+    socket.emit("acronym_generated", "abd");
     socket.broadcast.emit("acronym_generated", "abd");
   });
 });
