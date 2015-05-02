@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title></title>
+    <title><%= title%></title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -28,11 +28,11 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">Acronymble</a>
+          <a class="navbar-brand" href="/">Acronymble</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
+            <li class="active"><a href="/">Home</a></li>
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Rules <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
@@ -48,6 +48,15 @@
           </ul>
 
           <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><%= current_user.username%><span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li> Score: <%= current_user.score %></li>
+                <li class="divider"></li>
+                <li> Rank: <%= current_user.rank %></li>
+              </ul>
+            </li>
+            
             <li><a href="/users/logout"> Logout</a></li>
           </ul>
       

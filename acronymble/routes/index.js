@@ -9,7 +9,7 @@ var router = express.Router();
 router.get("/", function(req, res, next) {
 	if (req.session.current_user) {
 		console.log("current_user in session: " + req.session.current_user.username);
-		res.render("index.html", { title: "Acronymble" });	
+		res.render("index.html", { title: "Acronymble", current_user: req.session.current_user});	
 	} else {
 		res.render("login.html", { title: "login to Acronymble" });
 	}
