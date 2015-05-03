@@ -57,18 +57,46 @@ function generateLetter(numLetter){
   var array = [];
   for(index=0; index < numLetter; index++){
     temp = String.fromCharCode(97 + Math.floor(Math.random()*26));
-    array.push(temp);
+    array.push(temp.toUpperCase());
   }
-  return array;
+  return array.join(".");
 };
 
-// testing listening to an event
+// to keep track of sockets and users
+var connected_sockets = [];
+var connected_users = [];
+// Event handlers
 io.sockets.on("connection", function (socket) {
-  socket.on("start_game", function () {
-    console.log( " received from client: game started ");
-    socket.emit("acronym_generated", "abd");
-    socket.broadcast.emit("acronym_generated", "abd");
+  connected_sockets.push(socket);
+  socket.on("start_new_game", function () {
+    console.log("received from client: start_new_game ");
+    connected_sockets.forEach(function (sock) {
+      sock.emit("game_started");
+    });
+    // socket.emit("game_started");
+    // socket.broadcast.emit("game_started");    
   });
+
+  socket.on("join_game", function (data) {
+    connected_users.push(data);
+    console.log("join_game, received from client: " + data);
+
+    connected_sockets.forEach(function (sock) {
+      sock.emit("user_joined_game", data);
+    });
+    // socket.emit("user_joined_game", data);
+    // socket.broadcast.emit("user_joined_game", data);
+    console.log("connected users: " + connected_users);   
+  });
+
+  socket.on("generate_acronym", function () {
+    var acro = generateLetter(3);
+    console.log("acronym: " + acro);
+    connected_sockets.forEach(function (sock) {
+      sock.emit("acronym_generated", acro);
+    });
+  });
+
 });
 
 // catch 404 and forward to error handler

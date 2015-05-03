@@ -15,6 +15,11 @@
 
     <!-- Custom styles for this template -->
     <link href="stylesheets/style.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="javascripts/app.js"></script>
+    <script src="javascripts/angular.min.js"></script>
+    <script src="javascripts/angular-messages.min.js"></script>
+    <script src="javascripts/socket.io.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -50,7 +55,7 @@
 
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><%= current_user.username%><span class="caret"></span></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="username"><%= current_user.username%></span><span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
                 <li> Score: <%= current_user.score %></li>
                 <li class="divider"></li>
@@ -71,8 +76,32 @@
         <h1>Welcome to Acronymble</h1>
       </div>
 
-      <div class="game" id="gameplay" ng-controller="start_game">
-        <p><button class="btn btn-primary btn-lg" ng-click="start()">Start Game</button></p>
+      <div class="game" id="startGame" ng-controller="start_game">
+        <p id="start"><button class="btn btn-primary btn-lg" ng-click="start()">Start Game</button></p>
+        <p id="join" class="ng-hide"><button class="btn btn-primary btn-lg" ng-click="join('<%= current_user.username%>')">Join Game</button></p>
+        <ul ng-repeat="user in users_joined">
+            <li> {{ user }} joined the game</li>
+        </ul>
+        <p> {{acronym_message}} {{ acronym }} </p>
+      </div>
+
+      <div id="playGame" class="ng-hide" ng-controller="play_game" >
+        <form name="addPhraseForm" ng-submit="add_phrase('<%= current_user.username%>')">
+          <div class="col-xs-6 form-group">
+          <label for="phrase">Enter a phrase that matches the acronym</label>
+          <input type="text" name="phraseAdded" ng-model="phrase" id="phrase" class="form-control" placeholder="Enter a phrase" required autofocus>
+          </div>
+          <div class="form-group">
+            <div class="row">
+              <div class="col-sm-6 col-sm-offset-1">        
+                <button class="btn btn-primary">Submit Phrase</button>
+              </div>
+            </div>
+          </div>
+          <div class"error"> {{ error_message}} </div>       
+                  
+        </form>
+        
       </div>
     </div><!-- /Main -->
 
@@ -86,10 +115,9 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="javascripts/app.js"></script>
-    <script src="javascripts/socket.io.js"></script>
+    
+    
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    
   </body>
 </html>
