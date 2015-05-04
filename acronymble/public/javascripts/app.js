@@ -31,6 +31,8 @@ var main = function (toDoObjects) {
         }
 
         
+
+
         socket.on("user_joined_game", function (data) {
             console.log("received user_joined_game event from server,data: " + data);
             $scope.users_joined.push(data);
@@ -73,7 +75,8 @@ var main = function (toDoObjects) {
         var ac_arr, ph_arr, i;
         $scope.add_phrase = function (user) {
             console.log("acronym in play_game:" + acronym);
-            console.log("user " + user + " added : " + $scope.phrase);
+            //console.log("user " + user + " added : " + $scope.phrase);
+            socket.emit("add_phrase", {user: user, phrase: $scope.phrase});
             // validate phrase entered
             ac_arr = acronym.split(".");
             ph_arr = $scope.phrase.split(" ");
@@ -92,6 +95,19 @@ var main = function (toDoObjects) {
                 return $scope.error_message = "invalid phrase, length doesn't match";
             }                      
         }
+
+        
+    });
+
+    app.controller("voting", function($scope){
+
+        socket.on("vote_started", function(data){
+
+            // players have 60s to vote, after that, emit vote_ended even
+            setTimeout(function() {                    
+                    socket.emit("vote_ended");
+                }, 60000);
+        });
     });
     
     // in case we need the username here, we can retrieve it as below

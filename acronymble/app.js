@@ -19,11 +19,11 @@ var session = require("express-session");
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
-
-
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/acronymble');
 
+
+var User = require("../models/user");
 
 
 // view engine setup
@@ -62,6 +62,10 @@ function generateLetter(numLetter){
   return array.join(".");
 };
 
+// a varibale that keep all phrase added by user
+var list_phrase=[];
+
+
 // to keep track of sockets and users
 var connected_sockets = [];
 var connected_users = [];
@@ -96,6 +100,46 @@ io.sockets.on("connection", function (socket) {
       sock.emit("acronym_generated", acro);
     });
   });
+
+
+  socket.on("add_phrase", function(data){
+    list_phrase.push({author: data.user, phrase: data.phrase, vote:0});
+    console.log(list_phrase);
+  });
+
+  socket.on("game_ended",function(){   
+    socket.emit("vote_started", list_phrase);
+    console.log("vote started");
+  });// end game_ended
+
+  socket.on("vote_ended", function(){
+    // loop through list_phrase to find the winner
+    var winner = list_phrase[0], i;
+    for(i=1;i<list_phrase.length;i++){
+      if(winner.vote < list_phrase[i].vote){
+        winner = list_phrase[i];
+      }
+    }// end for
+
+    // update score for winner
+    User.findOne({username: winner.author}, function(err, result){
+      if(err){
+        console.log(err);
+      } else{
+        result.score += 5;
+        result.save(function(err){
+          if(err){
+            console.log(err);
+          }else{
+            console.log("winner score has been updated ");
+          }
+        })
+      }
+    });
+    socket.emit("winner", winner);
+    console.log("winner: " + winner.author);
+
+  }); // end vote_ended
 
 });
 
