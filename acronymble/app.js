@@ -22,8 +22,8 @@ var users = require('./routes/users');
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/acronymble');
 
-
-var User = require("../models/user");
+// this line will generate error 
+var User = require("./models/user");
 
 
 // view engine setup
