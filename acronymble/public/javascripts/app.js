@@ -100,14 +100,33 @@ var main = function (toDoObjects) {
     });
 
     app.controller("voting", function($scope){
-
+        $scope.phrases = [];
+        angular.element(document.querySelector("#list_phrases")).removeClass("ng-hide");
+        angular.element(document.querySelector("#playGame")).addClass("ng-hide");
         socket.on("vote_started", function(data){
-
+            $scope.phrases = data;
+            $scope.$apply();
             // players have 60s to vote, after that, emit vote_ended even
             setTimeout(function() {                    
                     socket.emit("vote_ended");
                 }, 60000);
         });
+
+        $scope.vote = function(author){
+            socket.emit("voted_phrase", author);            
+        }
+
+        socket.on("update_vote", function(data){
+            $scope.phrases = data;
+            $scope.$apply();
+        });
+
+        socket.on("winner", function(data){
+            $scope.winner = data;
+            $scope.$apply();
+            angular.element(document.querySelector("#winner")).removeClass("ng-hide");
+        })
+
     });
     
     // in case we need the username here, we can retrieve it as below

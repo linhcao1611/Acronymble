@@ -112,6 +112,19 @@ io.sockets.on("connection", function (socket) {
     console.log("vote started");
   });// end game_ended
 
+
+  socket.on("voted_phrase", function(author){
+    var i;
+    console.log(author+" has been voted");
+    for(i=0;i<list_phrase.length;i++){
+      if(list_phrase[i].author === author){
+        list_phrase[i].vote +=1;
+      }
+    }
+    console.log(list_phrase);
+    socket.broadcast.emit("update_vote", list_phrase);
+  });
+
   socket.on("vote_ended", function(){
     // loop through list_phrase to find the winner
     var winner = list_phrase[0], i;
@@ -136,8 +149,9 @@ io.sockets.on("connection", function (socket) {
         })
       }
     });
-    socket.emit("winner", winner);
+    socket.broadcast.emit("winner", winner);    
     console.log("winner: " + winner.author);
+    list_phrase=[];
 
   }); // end vote_ended
 

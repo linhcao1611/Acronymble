@@ -102,9 +102,22 @@
                   
         </form>
         
-      </div>
+      </div >
+        
 
-      <div id="voting" ng-controller="voting">
+      <div  ng-controller="voting" id="list_phrases" class="ng-hide">
+        <ul ng-repeat="phrase in phrases" >
+          <li>Phrase: {{phrase.phrase}} by {{phrase.author}} vote: {{phrase.vote}} </li>
+          <button id="vote_btn" ng-click="vote(phrase.author)" >Vote</button> 
+        </ul>
+
+
+        <div ng-controller="voting"  id="winner" class="ng-hide">
+          <p>Winner: {{winner.author}}</p>
+          <p>Phrase: {{winner.phrase}}</p>
+          <p>Voting: {{winner.vote}}</p>
+        </div>
+
 
       </div><!-- voting -->
 
