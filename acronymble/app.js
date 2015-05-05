@@ -72,9 +72,17 @@ function update_rank(score)
   if(score <= 20){
     return "Beginner";
   } else if (score <=40){
-    return "Level 1";
-  } else if(score <=60){
-    return "Level 2";
+    return "Bronze";
+  } else if(score <=100){
+    return "Silver";
+  } else if(score <200){
+    return "Gold";
+  } else if(score <500){
+    return "Platinum";
+  } else if(score <1000){
+    return "Diamond";
+  } else {
+    return "Master";
   }
 }
 
