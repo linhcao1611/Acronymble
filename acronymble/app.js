@@ -211,7 +211,6 @@ io.sockets.on("connection", function (socket) {
   });
 
   socket.on("sendChat", function(message, username){
-    socket.emit("recieveMessage", message, username);
     socket.broadcast.emit("recieveMessage", message, username);
   });
 

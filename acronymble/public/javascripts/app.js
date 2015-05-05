@@ -174,6 +174,7 @@ var main = function (toDoObjects) {
                 socket.emit("sendChat",$scope.message, username);
                 $scope.messages.push(username + ": " + $scope.message);
             }
+            $scope.message = "";
         };
 
         socket.on("recieveMessage", function(message, username){
