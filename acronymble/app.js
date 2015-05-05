@@ -56,7 +56,9 @@ app.use('/users', users);
 function generateLetter(){
   var index, temp;
   var array = [];
-  var numLetter = Math.floor((Math.random() * 5) + 3);
+  // TODO: uncomment this after done testing
+  // var numLetter = Math.floor((Math.random() * 5) + 3);
+  var numLetter = 3;
   for(index=0; index < numLetter; index++){
     temp = String.fromCharCode(97 + Math.floor(Math.random()*26));
     array.push(temp.toUpperCase());
@@ -88,37 +90,31 @@ var connected_users = [];
 io.sockets.on("connection", function (socket) {
   connected_sockets.push(socket);
   socket.on("start_new_game", function () {
-    console.log("received from client: start_new_game ");
+    // console.log("received from client: start_new_game ");
+    
     connected_sockets.forEach(function (sock) {
       sock.emit("game_started");
-      // list_phrase=[];
     });
     // socket.emit("game_started");
     // socket.broadcast.emit("game_started");    
   });
 
-  socket.on("another_game_started", function () {
-    console.log("another_game_started");
-    connected_sockets.forEach(function (sock) {
-      sock.emit("server_another_game_started");
-    });
-  });
 
   socket.on("join_game", function (data) {
-    connected_users.push(data);
-    console.log("join_game, received from client: " + data);
+    // uncomment the below if you need to keep track of users connected to the server
+    // connected_users.push(data);
+    // console.log("join_game, received from client: " + data);
 
     connected_sockets.forEach(function (sock) {
       sock.emit("user_joined_game", data);
     });
     // socket.emit("user_joined_game", data);
     // socket.broadcast.emit("user_joined_game", data);
-    console.log("connected users: " + connected_users);   
   });
 
   socket.on("generate_acronym", function () {
     var acro = generateLetter();
-    console.log("acronym: " + acro);
+    // console.log("acronym: " + acro);
     connected_sockets.forEach(function (sock) {
       sock.emit("acronym_generated", acro);
     });
@@ -127,86 +123,92 @@ io.sockets.on("connection", function (socket) {
 
   socket.on("add_phrase", function(data){
     list_phrase.push({author: data.user, phrase: data.phrase, vote:0});
-    console.log(list_phrase);
+    // console.log(list_phrase);
+    socket.broadcast.emit("phrase_added", data);
   });
 
+// after timeout is done on client side, the client emits game_ended event 
   socket.on("game_ended",function(){
     connected_sockets.forEach(function (sock) {
       sock.emit("vote_started", list_phrase);
     });
-    // socket.emit("vote_started", list_phrase);
-    console.log("vote started");
   });// end game_ended
 
   socket.on("voted_phrase", function(author){
     var i;
-    console.log(author+" has been voted");
-    for(i=0;i<list_phrase.length;i++){
-      if(list_phrase[i].author === author){
+    // console.log(author+" has been voted");
+    for(i=0; i < list_phrase.length; i++) { 
+      if(list_phrase[i].author === author) {
         list_phrase[i].vote +=1;
       }
     }
-    console.log(list_phrase);
     connected_sockets.forEach(function(sock){
       sock.emit("update_vote", list_phrase);
     });
     //socket.broadcast.emit("update_vote", list_phrase);
   });
 
-  socket.on("vote_ended", function(){
-    // loop through list_phrase to find the winner
-    var winner = list_phrase[0], i;
-    for(i=1;i<list_phrase.length;i++){
-      if(winner.vote < list_phrase[i].vote){
-        winner = list_phrase[i];
-      }
-    }// end for
+  socket.on("vote_ended", function() {
+    if (list_phrase.length > 0) {
+      // loop through list_phrase to find the winner
+      var winner = list_phrase[0], i;
+      for(i=1;i<list_phrase.length;i++){
+        if(winner.vote < list_phrase[i].vote){
+          winner = list_phrase[i];
+        }
+      }// end for
 
-    // update score for winner
-    User.findOne({username: winner.author}, function(err, result){
-      if(err){
-        console.log(err);
-      } else{
-        result.score += 5;
-        result.rank = update_rank(result.score);
-        result.save(function(err){
-          if(err){
-            console.log(err);
-          }else{
-            console.log("winner score has been updated ");
-          }
-        })
-      }
-    });
+      // update score for winner
+      User.findOne({username: winner.author}, function(err, result){
+        if(err){
+          console.log(err);
+        } else{
+          result.score += 5;
+          result.rank = update_rank(result.score);
+          result.save(function(err){
+            if(err){
+              console.log(err);
+            }else{
+              // console.log("winner score has been updated ");
+            }
+          });
+        }
+      });
 
 
-    for(i=0;i<list_phrase.length;i++){
-      if(list_phrase[i].author !== winner.author){
-        User.findOne({username: list_phrase[i].author}, function(err, result){
-          if(err){
-            console.log(err);
-          } else{
-            result.score += 1;
-            result.rank = update_rank(result.score);
-            result.save(function(err){
-              if(err){
-                console.log(err);
-              }else{
-                console.log("winner score has been updated ");
-              }
-            });
-          }
-        });
+      for(i=0;i<list_phrase.length;i++){
+        if(list_phrase[i].author !== winner.author){
+          User.findOne({username: list_phrase[i].author}, function(err, result){
+            if(err){
+              console.log(err);
+            } else{
+              result.score += 1;
+              result.rank = update_rank(result.score);
+              result.save(function(err){
+                if(err){
+                  console.log(err);
+                }else{
+                  // console.log("winner score has been updated ");
+                }
+              });
+            }
+          });
+        }
       }
+
+      connected_sockets.forEach(function(sock){
+        sock.emit("winner", winner);
+      });
     }
-
-    connected_sockets.forEach(function(sock){
-      sock.emit("winner", winner);
-    });
-    //socket.broadcast.emit("winner", winner);    
-    console.log("winner: " + winner.author);
   }); // end vote_ended
-
+  
+  socket.on("another_game_started", function () {
+    console.log("another_game_started");
+    list_phrase = [];
+    connected_sockets.forEach(function (sock) {
+      sock.emit("server_another_game_started");
+    });
+  });
 });
 
 // catch 404 and forward to error handler

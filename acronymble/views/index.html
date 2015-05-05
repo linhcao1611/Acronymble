@@ -101,17 +101,18 @@
               </div>
             </div>
           </div>
-          <div class"error"> {{ error_message}} </div>       
-                  
+          <div id="phrase_error" role="alert"> {{error_message}} </div>       
         </form>
-        
+        <div ng-repeat="p in recv_phrases_list track by $index">
+          <p>{{p.user}} added: {{p.phrase}}</p>
+        </div>
       </div >
         
 
-      <div ng-controller="voting" id="list_phrases" class="ng-hide">
+      <div ng-controller="voting" id="voting" class="ng-hide">
         <ul ng-repeat="phrase in phrases" >
-          <li>Phrase: {{phrase.phrase}} by {{phrase.author}} vote: {{phrase.vote}} </li>
-          <button id="vote_btn" ng-click="vote(phrase.author)" >Vote</button> 
+          <li>Phrase: {{phrase.phrase}} - By: {{phrase.author}} - Number of Votes: {{phrase.vote}} </li>
+          <button id="vote_btn" ng-click="vote(phrase.author)">Vote</button> 
         </ul>
 
 

@@ -24,21 +24,22 @@ var main = function (toDoObjects) {
         });
 
         $scope.join = function (user) {
-            console.log("user clicked join game: " + user);
-            console.log("emitting join_game");
+            // console.log("user clicked join game: " + user);
+            // console.log("emitting join_game");
             socket.emit("join_game", user);
             angular.element(document.querySelector("#join")).addClass("ng-hide");
         }    
 
 
         socket.on("user_joined_game", function (data) {
-            console.log("received user_joined_game event from server,data: " + data);
+            // console.log("received user_joined_game event from server,data: " + data);
             $scope.users_joined.push(data);
             $scope.$apply();
             // wait for 10 s for other users to join after 3 players join, after which send the acronym
+            // TODO: change this back to 3 before the demo
             if ($scope.users_joined.length >= 2) {
                 setTimeout(function() { 
-                    console.log($scope.users_joined.length + " joined the game");
+                    // console.log($scope.users_joined.length + " joined the game");
                     if (!$scope.acronym) {
                         socket.emit("generate_acronym");
                     }                    
@@ -47,8 +48,8 @@ var main = function (toDoObjects) {
         });
 
         socket.on("acronym_generated", function (new_acronym) {
-            console.log("acronym received from server: " + new_acronym);
-            $scope.users_joined = [];
+            // console.log("acronym received from server: " + new_acronym);
+            
             if (!$scope.acronym) {
                 $scope.acronym = new_acronym;
                 $scope.acronym_message = "Come up with a phrase for: ";
@@ -65,18 +66,21 @@ var main = function (toDoObjects) {
                 setTimeout(function() {
                     console.log("emiting game_ended"); 
                     socket.emit("game_ended");
+                    // clean up after the game ends
                     $scope.acronym = "";
-                }, 20000);
+                    $scope.acronym_message = "";
+                    $scope.users_joined = [];
+                    game_timer_started = false;
+                }, 60000);
             }
         });
     });
 
     app.controller("play_game", function ($scope) {
         var ac_arr, ph_arr, i;
+        $scope.recv_phrases_list = [];
         $scope.add_phrase = function (user) {
-            console.log("acronym in play_game:" + acronym);
-            //console.log("user " + user + " added : " + $scope.phrase);
-            socket.emit("add_phrase", {user: user, phrase: $scope.phrase});
+            
             // validate phrase entered
             ac_arr = acronym.split(".");
             ph_arr = $scope.phrase.split(" ");
@@ -84,29 +88,48 @@ var main = function (toDoObjects) {
             if (ac_arr.length === ph_arr.length) {
                 for (i = 0; i <  ac_arr.length; i++) {
                     if (ph_arr[i].charAt(0).toUpperCase() !== ac_arr[i]) {
-                        return $scope.error_message = "phrase doesn't match acronym";
+                        angular.element(document.querySelector("#phrase_error")).addClass("alert alert-danger");
+                        $scope.error_message = "phrase doesn't match acronym";
+                        return $scope.error_message;
                     }
                 }
-                // phrase is valid emit phrase_added event to the server
-                // TODO: emit the event and add listener on server side
-                socket.emit("phrase_added")
-                console.log("phrase valid")
+                // phrase is valid emit add_server event to the server
+                socket.emit("add_phrase", {user: user, phrase: $scope.phrase});
+                angular.element(document.querySelector("#phrase_error")).removeClass("alert alert-danger");
+                $scope.error_message = "";
 
             } else {
-                return $scope.error_message = "invalid phrase, length doesn't match";
-            }                      
-        }        
+                angular.element(document.querySelector("#phrase_error")).addClass("alert alert-danger");
+                $scope.error_message = "invalid phrase, length doesn't match";
+                return $scope.error_message;
+            }
+            $scope.recv_phrases_list.push({user: user, phrase: $scope.phrase});
+            $scope.phrase = "";
+        }
+
+        socket.on("phrase_added", function (data) {
+            $scope.recv_phrases_list.push(data);
+            $scope.$apply();
+        });
+
+        socket.on("server_another_game_started", function () {
+            console.log("cleaning up: play_game");
+            $scope.recv_phrases_list = [];
+            $scope.error_message = "";
+        });
     });
 
     app.controller("voting", function($scope){
         $scope.phrases = [];
-        angular.element(document.querySelector("#list_phrases")).removeClass("ng-hide");
-        angular.element(document.querySelector("#playGame")).addClass("ng-hide");
+        
         
         socket.on("vote_started", function(data){
+            angular.element(document.querySelector("#voting")).removeClass("ng-hide");
+            angular.element(document.querySelector("#playGame")).addClass("ng-hide");
             $scope.phrases = data;
             $scope.$apply();
-            // players have 60s to vote, after that, emit vote_ended even
+            // players have 10s to vote, after that, emit vote_ended even
+            console.log("voting timer started");
             setTimeout(function() {                    
                 socket.emit("vote_ended");
             }, 10000);
@@ -134,9 +157,11 @@ var main = function (toDoObjects) {
         };
 
         socket.on("server_another_game_started", function() {
-            angular.element(document.querySelector("#list_phrases")).addClass("ng-hide");
+            $scope.phrases = [];
+            $scope.winner = "";
+            $scope.$apply();
+            angular.element(document.querySelector("#voting")).addClass("ng-hide");
             angular.element(document.querySelector("#playGame")).addClass("ng-hide");
-            // angular.element(document.querySelector("#joined_users_list")).addClass("ng-hide");
             angular.element(document.querySelector("#join")).removeClass("ng-hide");
         });
 
