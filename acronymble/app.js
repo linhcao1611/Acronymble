@@ -53,15 +53,29 @@ app.use('/users', users);
 
 
 // source: http://stackoverflow.com/questions/16123346/generate-random-letters-in-javascript-and-count-how-many-times-each-letter-has-o
-function generateLetter(numLetter){
+function generateLetter(){
   var index, temp;
   var array = [];
+  var numLetter = Math.floor((Math.random() * 5) + 3);
   for(index=0; index < numLetter; index++){
     temp = String.fromCharCode(97 + Math.floor(Math.random()*26));
     array.push(temp.toUpperCase());
   }
   return array.join(".");
 };
+
+// check and update player rank
+function update_rank(score)
+{
+  if(score <= 20){
+    return "Beginner";
+  } else if (score <=40){
+    return "Level 1";
+  } else if(score <=60){
+    return "Level 2";
+  }
+}
+
 
 // a varibale that keep all phrase added by user
 var list_phrase=[];
@@ -77,6 +91,7 @@ io.sockets.on("connection", function (socket) {
     console.log("received from client: start_new_game ");
     connected_sockets.forEach(function (sock) {
       sock.emit("game_started");
+      list_phrase=[];
     });
     // socket.emit("game_started");
     // socket.broadcast.emit("game_started");    
@@ -102,7 +117,7 @@ io.sockets.on("connection", function (socket) {
   });
 
   socket.on("generate_acronym", function () {
-    var acro = generateLetter(3);
+    var acro = generateLetter();
     console.log("acronym: " + acro);
     connected_sockets.forEach(function (sock) {
       sock.emit("acronym_generated", acro);
@@ -124,7 +139,6 @@ io.sockets.on("connection", function (socket) {
     connected_users = [];
   });// end game_ended
 
-
   socket.on("voted_phrase", function(author){
     var i;
     console.log(author+" has been voted");
@@ -134,10 +148,10 @@ io.sockets.on("connection", function (socket) {
       }
     }
     console.log(list_phrase);
-    connected_sockets.forEach(function (sock) {
+    connected_sockets.forEach(function(sock){
       sock.emit("update_vote", list_phrase);
     });
-    // socket.broadcast.emit("update_vote", list_phrase);
+    //socket.broadcast.emit("update_vote", list_phrase);
   });
 
   socket.on("vote_ended", function(){
@@ -157,6 +171,7 @@ io.sockets.on("connection", function (socket) {
         console.log(err);
       } else{
         result.score += 5;
+        result.rank = update_rank(result.score);
         result.save(function(err){
           if(err){
             console.log(err);
@@ -167,13 +182,32 @@ io.sockets.on("connection", function (socket) {
       }
     });
 
-    connected_sockets.forEach(function (sock) {
+
+    for(i=0;i<list_phrase.length;i++){
+      if(list_phrase[i].author !== winner.author){
+        User.findOne({username: list_phrase[i].author}, function(err, result){
+          if(err){
+            console.log(err);
+          } else{
+            result.score += 1;
+            result.rank = update_rank(result.score);
+            result.save(function(err){
+              if(err){
+                console.log(err);
+              }else{
+                console.log("winner score has been updated ");
+              }
+            })
+          }
+        });
+      }
+    }
+
+    connected_sockets.forEach(function(sock){
       sock.emit("winner", winner);
     });
-    // socket.broadcast.emit("winner", winner);    
+    //socket.broadcast.emit("winner", winner);    
     console.log("winner: " + winner.author);
-    // list_phrase=[];
-
   }); // end vote_ended
 
 });
