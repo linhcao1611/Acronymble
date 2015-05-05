@@ -209,6 +209,12 @@ io.sockets.on("connection", function (socket) {
       sock.emit("server_another_game_started");
     });
   });
+
+  socket.on("sendChat", function(message, username){
+    socket.emit("recieveMessage", message, username);
+    socket.broadcast.emit("recieveMessage", message, username);
+  });
+
 });
 
 // catch 404 and forward to error handler
