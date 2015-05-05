@@ -91,7 +91,7 @@ io.sockets.on("connection", function (socket) {
     console.log("received from client: start_new_game ");
     connected_sockets.forEach(function (sock) {
       sock.emit("game_started");
-      list_phrase=[];
+      // list_phrase=[];
     });
     // socket.emit("game_started");
     // socket.broadcast.emit("game_started");    
