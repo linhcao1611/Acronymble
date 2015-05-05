@@ -66,7 +66,7 @@ var main = function (toDoObjects) {
                 setTimeout(function() {
                     console.log("emiting game_ended"); 
                     socket.emit("game_ended");
-                }, 60000);
+                }, 20000);
             }
         });
     });
