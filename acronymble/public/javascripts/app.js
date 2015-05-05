@@ -151,7 +151,10 @@ var main = function (toDoObjects) {
             }
         };
 
-        
+        socket.on("recieveMessage", function(message){
+            $scope.messages.push(message);
+            $scope.$apply();
+        });
     });
     
     // in case we need the username here, we can retrieve it as below

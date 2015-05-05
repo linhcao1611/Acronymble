@@ -206,6 +206,11 @@ io.sockets.on("connection", function (socket) {
     //socket.broadcast.emit("winner", winner);    
     console.log("winner: " + winner.author);
   }); // end vote_ended
+  
+  socket.on("sendChat", function(message){
+    console.log(message + "recieved");
+    socket.broadcast.emit("recieveMessage", message);
+  });
 
 });
 
