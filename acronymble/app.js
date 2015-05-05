@@ -83,20 +83,22 @@ function update_rank(score)
 var list_phrase=[];
 
 
-// to keep track of sockets and users
+// to keep track of sockets
 var connected_sockets = [];
-var connected_users = [];
+
+// uncomment the below if you need to keep track of users connected to the server
+// var connected_users = [];
+
 // Event handlers
 io.sockets.on("connection", function (socket) {
   connected_sockets.push(socket);
+  
   socket.on("start_new_game", function () {
-    // console.log("received from client: start_new_game ");
+    // create a game instance
     
     connected_sockets.forEach(function (sock) {
       sock.emit("game_started");
     });
-    // socket.emit("game_started");
-    // socket.broadcast.emit("game_started");    
   });
 
 

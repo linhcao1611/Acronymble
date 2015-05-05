@@ -66,14 +66,19 @@ var main = function (toDoObjects) {
                 setTimeout(function() {
                     console.log("emiting game_ended"); 
                     socket.emit("game_ended");
-                    // clean up after the game ends
-                    $scope.acronym = "";
-                    $scope.acronym_message = "";
-                    $scope.users_joined = [];
-                    game_timer_started = false;
+                    
                 }, 60000);
             }
         });
+        socket.on("server_another_game_started", function () {
+            console.log("cleaning up: start_game");
+            // clean up after the game ends
+            $scope.acronym = "";
+            $scope.acronym_message = "";
+            $scope.users_joined = [];
+            game_timer_started = false;
+        });
+        
     });
 
     app.controller("play_game", function ($scope) {

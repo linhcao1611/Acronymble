@@ -78,7 +78,10 @@
 
       <div class="game" id="startGame" ng-controller="start_game">
         <p id="start"><button class="btn btn-primary btn-lg" ng-click="start()">Start Game</button></p>
-        <p id="join" class="ng-hide"><button class="btn btn-primary btn-lg" ng-click="join('<%= current_user.username%>')">Join Game</button></p>
+        <div id="join" class="ng-hide"> 
+          <h2>New Game has Started </h2>
+          <button class="btn btn-primary btn-lg" ng-click="join('<%= current_user.username%>')">Join Game</button>
+        </div>
         <div id="joined_users_list">
           <ul ng-repeat="user in users_joined">
               <li> {{ user }} joined the game</li>
@@ -119,7 +122,7 @@
         <div ng-controller="voting"  id="winner" class="ng-hide">
           <p>Winner: {{winner.author}}</p>
           <p>Phrase: {{winner.phrase}}</p>
-          <p>Voting: {{winner.vote}}</p>
+          <p>Number of Votes: {{winner.vote}}</p>
         </div>
 
          <p id="start_new_game" class="ng-hide"><button class="btn btn-primary btn-lg" ng-click="start_new_game()">Start New Game</button></p>
