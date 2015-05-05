@@ -28,9 +28,7 @@ var main = function (toDoObjects) {
             console.log("emitting join_game");
             socket.emit("join_game", user);
             angular.element(document.querySelector("#join")).addClass("ng-hide");
-        }
-
-        
+        }    
 
 
         socket.on("user_joined_game", function (data) {
@@ -66,7 +64,7 @@ var main = function (toDoObjects) {
                 setTimeout(function() {
                     console.log("emiting game_ended"); 
                     socket.emit("game_ended");
-                }, 60000);
+                }, 20000);
             }
         });
     });
@@ -89,27 +87,27 @@ var main = function (toDoObjects) {
                 }
                 // phrase is valid emit phrase_added event to the server
                 // TODO: emit the event and add listener on server side
+                socket.emit("phrase_added")
                 console.log("phrase valid")
 
             } else {
                 return $scope.error_message = "invalid phrase, length doesn't match";
             }                      
-        }
-
-        
+        }        
     });
 
     app.controller("voting", function($scope){
         $scope.phrases = [];
         angular.element(document.querySelector("#list_phrases")).removeClass("ng-hide");
         angular.element(document.querySelector("#playGame")).addClass("ng-hide");
+        
         socket.on("vote_started", function(data){
             $scope.phrases = data;
             $scope.$apply();
             // players have 60s to vote, after that, emit vote_ended even
             setTimeout(function() {                    
-                    socket.emit("vote_ended");
-                }, 60000);
+                socket.emit("vote_ended");
+            }, 10000);
         });
 
         $scope.vote = function(author){
@@ -125,7 +123,20 @@ var main = function (toDoObjects) {
             $scope.winner = data;
             $scope.$apply();
             angular.element(document.querySelector("#winner")).removeClass("ng-hide");
-        })
+            angular.element(document.querySelector("#start_new_game")).removeClass("ng-hide");
+
+        });
+
+        $scope.start_new_game = function () {
+            socket.emit("another_game_started");
+        };
+
+        socket.on("server_another_game_started", function() {
+            angular.element(document.querySelector("#list_phrases")).addClass("ng-hide");
+            angular.element(document.querySelector("#playGame")).addClass("ng-hide");
+            angular.element(document.querySelector("#joined_users_list")).addClass("ng-hide");
+            angular.element(document.querySelector("#join")).removeClass("ng-hide");
+        });
 
     });
     

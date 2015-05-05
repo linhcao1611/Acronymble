@@ -79,10 +79,13 @@
       <div class="game" id="startGame" ng-controller="start_game">
         <p id="start"><button class="btn btn-primary btn-lg" ng-click="start()">Start Game</button></p>
         <p id="join" class="ng-hide"><button class="btn btn-primary btn-lg" ng-click="join('<%= current_user.username%>')">Join Game</button></p>
-        <ul ng-repeat="user in users_joined">
-            <li> {{ user }} joined the game</li>
-        </ul>
-        <p> {{acronym_message}} {{ acronym }} </p>
+        <div id="joined_users_list">
+          <ul ng-repeat="user in users_joined">
+              <li> {{ user }} joined the game</li>
+          </ul>
+          <p> {{acronym_message}} {{ acronym }} </p>
+        </div>
+
       </div>
 
       <div id="playGame" class="ng-hide" ng-controller="play_game" >
@@ -105,7 +108,7 @@
       </div >
         
 
-      <div  ng-controller="voting" id="list_phrases" class="ng-hide">
+      <div ng-controller="voting" id="list_phrases" class="ng-hide">
         <ul ng-repeat="phrase in phrases" >
           <li>Phrase: {{phrase.phrase}} by {{phrase.author}} vote: {{phrase.vote}} </li>
           <button id="vote_btn" ng-click="vote(phrase.author)" >Vote</button> 
@@ -117,6 +120,8 @@
           <p>Phrase: {{winner.phrase}}</p>
           <p>Voting: {{winner.vote}}</p>
         </div>
+
+         <p id="start_new_game" class="ng-hide"><button class="btn btn-primary btn-lg" ng-click="start_new_game()">Start New Game</button></p>
 
 
       </div><!-- voting -->
