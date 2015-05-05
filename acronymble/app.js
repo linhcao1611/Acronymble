@@ -24,6 +24,7 @@ mongoose.connect('mongodb://localhost/acronymble');
 
 // this line will generate error 
 var User = require("./models/user");
+var Game = require("./models/game");
 
 
 // view engine setup
@@ -96,6 +97,13 @@ io.sockets.on("connection", function (socket) {
     // socket.broadcast.emit("game_started");    
   });
 
+  socket.on("another_game_started", function () {
+    console.log("another_game_started");
+    connected_sockets.forEach(function (sock) {
+      sock.emit("server_another_game_started");
+    });
+  });
+
   socket.on("join_game", function (data) {
     connected_users.push(data);
     console.log("join_game, received from client: " + data);
@@ -122,11 +130,14 @@ io.sockets.on("connection", function (socket) {
     console.log(list_phrase);
   });
 
-  socket.on("game_ended",function(){   
-    socket.emit("vote_started", list_phrase);
+  socket.on("game_ended",function(){
+    connected_sockets.forEach(function (sock) {
+      sock.emit("vote_started", list_phrase);
+    });
+    // socket.emit("vote_started", list_phrase);
     console.log("vote started");
+    connected_users = [];
   });// end game_ended
-
 
   socket.on("voted_phrase", function(author){
     var i;
@@ -152,6 +163,8 @@ io.sockets.on("connection", function (socket) {
       }
     }// end for
 
+    console.log("winner after loop" + winner );
+
     // update score for winner
     User.findOne({username: winner.author}, function(err, result){
       if(err){
@@ -168,6 +181,7 @@ io.sockets.on("connection", function (socket) {
         })
       }
     });
+
 
     for(i=0;i<list_phrase.length;i++){
       if(list_phrase[i].author !== winner.author){
@@ -194,8 +208,6 @@ io.sockets.on("connection", function (socket) {
     });
     //socket.broadcast.emit("winner", winner);    
     console.log("winner: " + winner.author);
-    
-
   }); // end vote_ended
 
 });
