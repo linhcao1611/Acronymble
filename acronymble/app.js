@@ -136,7 +136,6 @@ io.sockets.on("connection", function (socket) {
     });
     // socket.emit("vote_started", list_phrase);
     console.log("vote started");
-    connected_users = [];
   });// end game_ended
 
   socket.on("voted_phrase", function(author){
@@ -162,8 +161,6 @@ io.sockets.on("connection", function (socket) {
         winner = list_phrase[i];
       }
     }// end for
-
-    console.log("winner after loop" + winner );
 
     // update score for winner
     User.findOne({username: winner.author}, function(err, result){
@@ -197,7 +194,7 @@ io.sockets.on("connection", function (socket) {
               }else{
                 console.log("winner score has been updated ");
               }
-            })
+            });
           }
         });
       }

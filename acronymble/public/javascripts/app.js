@@ -48,6 +48,7 @@ var main = function (toDoObjects) {
 
         socket.on("acronym_generated", function (new_acronym) {
             console.log("acronym received from server: " + new_acronym);
+            $scope.users_joined = [];
             if (!$scope.acronym) {
                 $scope.acronym = new_acronym;
                 $scope.acronym_message = "Come up with a phrase for: ";
@@ -64,6 +65,7 @@ var main = function (toDoObjects) {
                 setTimeout(function() {
                     console.log("emiting game_ended"); 
                     socket.emit("game_ended");
+                    $scope.acronym = "";
                 }, 20000);
             }
         });
@@ -134,7 +136,7 @@ var main = function (toDoObjects) {
         socket.on("server_another_game_started", function() {
             angular.element(document.querySelector("#list_phrases")).addClass("ng-hide");
             angular.element(document.querySelector("#playGame")).addClass("ng-hide");
-            angular.element(document.querySelector("#joined_users_list")).addClass("ng-hide");
+            // angular.element(document.querySelector("#joined_users_list")).addClass("ng-hide");
             angular.element(document.querySelector("#join")).removeClass("ng-hide");
         });
 
