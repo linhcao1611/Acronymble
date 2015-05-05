@@ -144,15 +144,15 @@ var main = function (toDoObjects) {
     
     app.controller("chat_controller", function($scope){
         $scope.messages = [];
-        $scope.addMessage = function(){
+        $scope.addMessage = function(username){
             if($scope.message !== undefined){
-                socket.emit("sendChat",$scope.message);
-                $scope.messages.push($scope.message);
+                socket.emit("sendChat",$scope.message, username);
+                $scope.messages.push(username + ": " + $scope.message);
             }
         };
 
-        socket.on("recieveMessage", function(message){
-            $scope.messages.push(message);
+        socket.on("recieveMessage", function(message, username){
+            $scope.messages.push(username + ": " + message);
             $scope.$apply();
         });
     });
