@@ -129,6 +129,18 @@ var main = function (toDoObjects) {
 
     });
     
+    app.controller("chat_controller", function($scope){
+        $scope.messages = [];
+        $scope.addMessage = function(){
+            if($scope.message !== undefined){
+                socket.emit("sendChat",$scope.message);
+                $scope.messages.push($scope.message);
+            }
+        };
+
+        
+    });
+    
     // in case we need the username here, we can retrieve it as below
     // console.log("username:" + $(".username").text());
 
