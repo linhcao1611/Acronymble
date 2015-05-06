@@ -30,7 +30,10 @@
 
 <!-- attaching the acronymble angular module to body tag -->
   <body ng-app="acronymble">
+  <!--Code Reference from bootply for poping an image pop after click on a button
 
+  -->
+<!--Modified here to on click the rules making it pop up an imgre-->
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
@@ -38,17 +41,10 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
+
             <li class="active"><a href="/">Home</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Rules <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li>Make up a phrase with the given acronym</li>
-                <li class="divider"></li>
-                <li>Vote for your favorite!</li>
-                <li class="divider"></li>
-                <li>Win points for being more awesome than your peers</a></li>
-                <li class="divider"></li>
-                <li>More points = higher rank</li>
+
+            <li class="active"><a href="#" data-toggle="modal" data-target=".pop-up-2">Rules</a>
               </ul>
             </li>
           </ul>
@@ -78,17 +74,11 @@
 
       <div class="game" id="startGame" ng-controller="start_game">
         <p id="start"><button class="btn btn-primary btn-lg" ng-click="start()">Start Game</button></p>
-        <div id="join" class="ng-hide"> 
-          <h2>New Game has Started </h2>
-          <button class="btn btn-primary btn-lg" ng-click="join('<%= current_user.username%>')">Join Game</button>
-        </div>
-        <div id="joined_users_list">
-          <ul ng-repeat="user in users_joined">
-              <li> {{ user }} joined the game</li>
-          </ul>
-          <p> {{acronym_message}} {{ acronym }} </p>
-        </div>
-
+        <p id="join" class="ng-hide"><button class="btn btn-primary btn-lg" ng-click="join('<%= current_user.username%>')">Join Game</button></p>
+        <ul ng-repeat="user in users_joined">
+            <li> {{ user }} joined the game</li>
+        </ul>
+        <p> {{acronym_message}} {{ acronym }} </p>
       </div>
 
       <div id="playGame" class="ng-hide" ng-controller="play_game" >
@@ -104,45 +94,52 @@
               </div>
             </div>
           </div>
-          <div id="phrase_error" role="alert"> {{error_message}} </div>       
+          <div class"error"> {{ error_message}} </div>       
+                  
         </form>
-        <div ng-repeat="p in recv_phrases_list track by $index">
-          <p>{{p.user}} added: {{p.phrase}}</p>
-        </div>
+        
       </div >
         
 
-      <div ng-controller="voting" id="voting" class="ng-hide">
+      <div  ng-controller="voting" id="list_phrases" class="ng-hide">
         <ul ng-repeat="phrase in phrases" >
-          <li>Phrase: {{phrase.phrase}} - By: {{phrase.author}} - Number of Votes: {{phrase.vote}} </li>
-          <button id="vote_btn" ng-click="vote(phrase.author)">Vote</button> 
+          <li>Phrase: {{phrase.phrase}} by {{phrase.author}} vote: {{phrase.vote}} </li>
+          <button id="vote_btn" ng-click="vote(phrase.author)" >Vote</button> 
         </ul>
 
 
         <div ng-controller="voting"  id="winner" class="ng-hide">
           <p>Winner: {{winner.author}}</p>
           <p>Phrase: {{winner.phrase}}</p>
-          <p>Number of Votes: {{winner.vote}}</p>
+          <p>Voting: {{winner.vote}}</p>
         </div>
-
-         <p id="start_new_game" class="ng-hide"><button class="btn btn-primary btn-lg" ng-click="start_new_game()">Start New Game</button></p>
 
 
       </div><!-- voting -->
 
     </div><!-- /Main -->
 
+ <!-- Code for pop up image got from bootply -->
+  <div class="modal fade pop-up-2" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel-2" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title" id="myLargeModalLabel-2">GameRules</h4>
+        </div>
+        <div class="modal-body">
+        <img src="Images/gameRules.jpg" class="img-responsive img-rounded center-block" alt="">
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal mixer image -->
+
 
     <!-- Chat -->
-    <div class="chat" ng-controller="chat_controller">
+    <div class="chat">
+
         <h1>chat</h1>
-        <ul ng-repeat="element in messages track by $index">
-          <li>{{element}}</li>
-        </ul>
-        <form ng-submit="addMessage('<%= current_user.username%>')">
-          <input type="text" ng-model="message" placeholder="Enter Message">
-          <button class="btn btn-primary">Send</button>
-        </form>
     </div> <!-- /chat -->
 
 
