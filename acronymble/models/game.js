@@ -10,7 +10,8 @@ var GameSchema = new Schema({
 	acronym: String,
 	phrases: Object,
 	winner: String,
-	winner_phrase: String
+	winner_phrase: String,
+	game_in_progress: {type: Boolean, default: false}
 });
 
 module.exports = mongoose.model("Game", GameSchema);

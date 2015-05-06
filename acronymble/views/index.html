@@ -73,11 +73,11 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal mixer image -->
-
     <!-- Main -->
     <div class="container">
       <div class="lobby">
         <h1>Welcome to Acronymble</h1>
+        
       </div>
 
       <div class="game" id="startGame" ng-controller="start_game">
@@ -96,7 +96,7 @@
       </div>
 
       <div id="playGame" class="ng-hide" ng-controller="play_game" >
-        <div id="addPhraseForm"></div>
+        <div id="addPhraseForm">
           <form ng-submit="add_phrase('<%= current_user.username%>')">
             <div class="col-xs-6 form-group">
             <label for="phrase">Enter a phrase that matches the acronym</label>
@@ -111,6 +111,7 @@
             </div>
             <div id="phrase_error" role="alert"> {{error_message}} </div>       
           </form>
+        </div>
         <div ng-repeat="p in recv_phrases_list track by $index">
           <p>{{p.user}} added: {{p.phrase}}</p>
         </div>

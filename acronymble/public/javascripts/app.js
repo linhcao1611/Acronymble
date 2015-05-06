@@ -5,16 +5,16 @@ var main = function (toDoObjects) {
     var app = angular.module("acronymble", ["ngMessages"]);
 
     var acronym = "";
-    var game_timer_started = false;
+    var game_timer_started = false;    
 
     socket = io.connect("http://localhost:3000");
 // TODO: consider the case of a user loggin in while a game is in progress
-    app.controller("start_game", function ($scope) {
+    app.controller("start_game", function ($scope, $http) {
         $scope.users_joined = [];
         $scope.acronym = "";
         $scope.start = function () {
-            console.log("emitting start_game event");
-            socket.emit("start_new_game");            
+            console.log("sending start_game request");
+            socket.emit("start_new_game");
         }
 
         socket.on("game_started", function (data) {
@@ -55,6 +55,7 @@ var main = function (toDoObjects) {
                 $scope.acronym_message = "Come up with a phrase for: ";
                 $scope.$apply();
                 angular.element(document.querySelector("#playGame")).removeClass("ng-hide");
+                angular.element(document.querySelector("#addPhraseForm")).removeClass("ng-hide");
                 acronym = $scope.acronym;
             }
             // TODO: consider moving this to server since it could happen that multiple clients start timers and emit the event
