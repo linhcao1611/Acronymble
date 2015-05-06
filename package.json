@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "node acronymble/app.js"
   },
   "dependencies": {
     "body-parser": "~1.12.0",
