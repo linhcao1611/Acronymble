@@ -208,7 +208,8 @@ var main = function () {
     app.controller("chat_controller", function($scope){
         $scope.messages = [];
         $scope.addMessage = function(username){
-            if($scope.message !== undefined){
+            if($scope.message !== undefined && $scope.message !== ""){
+                console.log($scope.message);
                 socket.emit("sendChat",$scope.message, username);
                 $scope.messages.push(username + ": " + $scope.message);
             }
