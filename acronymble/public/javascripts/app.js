@@ -1,4 +1,4 @@
-var main = function (toDoObjects) {
+var main = function () {
     "use strict";
     var socket;
 
@@ -36,8 +36,8 @@ var main = function (toDoObjects) {
             $scope.users_joined.push(data);
             $scope.$apply();
             // wait for 10 s for other users to join after 3 players join, after which send the acronym
-            // TODO: change this back to 3 before the demo
-            if ($scope.users_joined.length >= 2) {
+            // DONE change this back to 3 before the demo
+            if ($scope.users_joined.length >= 3) {
                 setTimeout(function() { 
                     // console.log($scope.users_joined.length + " joined the game");
                     if (!$scope.acronym) {
@@ -150,10 +150,10 @@ var main = function (toDoObjects) {
             angular.element(document.querySelector("#start_new_game")).addClass("ng-hide");
             $scope.phrases = data;
             $scope.$apply();
-            // players have 20s to vote, after that, emit vote_ended even
+            // players have 10s to vote, after that, emit vote_ended even
             console.log("voting timer started");
 
-            var n = 20;
+            var n = 10;
             var tm = setInterval(function(){
                 n--;
                 if(n===0){
@@ -169,7 +169,7 @@ var main = function (toDoObjects) {
 
             setTimeout(function() {                    
                 socket.emit("vote_ended");
-            }, 20000);
+            }, 10000);
         });
 
         $scope.vote = function(author){

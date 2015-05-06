@@ -56,9 +56,9 @@ app.use('/users', users);
 function generateLetter(){
   var index, temp;
   var array = [];
-  // TODO: uncomment this after done testing
-  // var numLetter = Math.floor((Math.random() * 5) + 3);
-  var numLetter = 3;
+  // DONE uncomment this after done testing
+  var numLetter = Math.floor((Math.random() * 5) + 3);
+  // var numLetter = 3;
   for(index=0; index < numLetter; index++){
     temp = String.fromCharCode(97 + Math.floor(Math.random()*26));
     array.push(temp.toUpperCase());
