@@ -132,13 +132,14 @@ var main = function (toDoObjects) {
         socket.on("vote_started", function(data){
             angular.element(document.querySelector("#voting")).removeClass("ng-hide");
             angular.element(document.querySelector("#playGame")).addClass("ng-hide");
+            angular.element(document.querySelector("#start_new_game")).addClass("ng-hide");
             $scope.phrases = data;
             $scope.$apply();
             // players have 10s to vote, after that, emit vote_ended even
             console.log("voting timer started");
             setTimeout(function() {                    
                 socket.emit("vote_ended");
-            }, 10000);
+            }, 20000);
         });
 
         $scope.vote = function(author){
@@ -169,6 +170,7 @@ var main = function (toDoObjects) {
             angular.element(document.querySelector("#voting")).addClass("ng-hide");
             angular.element(document.querySelector("#playGame")).addClass("ng-hide");
             angular.element(document.querySelector("#join")).removeClass("ng-hide");
+            angular.element(document.querySelector("#winner")).addClass("ng-hide");
         });
 
     });
