@@ -63,6 +63,20 @@ var main = function (toDoObjects) {
             if (!game_timer_started) {
                 game_timer_started = true;
                 console.log("timer started");
+
+                var n = 60;
+                var tm = setInterval(function(){
+                    n--;
+                    if(n===0){
+                        clearInterval(tm)
+                        $scope.timer = undefined;
+                        $scope.$apply();
+                    }
+                    else{
+                        $scope.timer = "(Time Left: " + n.toString() + ")";
+                        $scope.$apply();
+                    }
+                }, 1000);
                                
                 setTimeout(function() {
                     console.log("emiting game_ended"); 
@@ -136,8 +150,23 @@ var main = function (toDoObjects) {
             angular.element(document.querySelector("#start_new_game")).addClass("ng-hide");
             $scope.phrases = data;
             $scope.$apply();
-            // players have 10s to vote, after that, emit vote_ended even
+            // players have 20s to vote, after that, emit vote_ended even
             console.log("voting timer started");
+
+            var n = 20;
+            var tm = setInterval(function(){
+                n--;
+                if(n===0){
+                    clearInterval(tm)
+                    $scope.timer = undefined;
+                    $scope.$apply();
+                }
+                else{
+                    $scope.timer = "(Time to Vote: " + n.toString() + ")";
+                    $scope.$apply();
+                }
+            }, 1000);
+
             setTimeout(function() {                    
                 socket.emit("vote_ended");
             }, 20000);

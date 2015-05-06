@@ -90,7 +90,7 @@
           <ul ng-repeat="user in users_joined">
               <li> {{ user }} joined the game</li>
           </ul>
-          <p> {{acronym_message}} {{ acronym }} </p>
+          <p> {{acronym_message}} {{ acronym }}  {{timer}}</p>
         </div>
 
       </div>
@@ -119,6 +119,7 @@
         
 
       <div ng-controller="voting" id="voting" class="ng-hide">
+        <p>{{timer}}</p>
         <ul ng-repeat="phrase in phrases" >
           <li>Phrase: {{phrase.phrase}} - By: {{phrase.author}} - Number of Votes: {{phrase.vote}} </li>
           <button id="vote_btn" ng-click="vote(phrase.author)">Vote</button> 
