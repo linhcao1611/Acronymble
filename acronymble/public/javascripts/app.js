@@ -110,6 +110,7 @@ var main = function (toDoObjects) {
             }
             $scope.recv_phrases_list.push({user: user, phrase: $scope.phrase});
             $scope.phrase = "";
+            angular.element(document.querySelector("#addPhraseForm")).addClass("ng-hide");
         }
 
         socket.on("phrase_added", function (data) {
