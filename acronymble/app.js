@@ -104,6 +104,7 @@ io.sockets.on("connection", function (socket) {
   socket.on("start_new_game", function () {
     // create a game instance
     
+    list_phrase = [];
     connected_sockets.forEach(function (sock) {
       sock.emit("game_started");
     });
