@@ -56,9 +56,9 @@ app.use('/users', users);
 function generateLetter(){
   var index, temp;
   var array = [];
-  // DONE uncomment this after done testing
-  var numLetter = Math.floor((Math.random() * 5) + 3);
-  // var numLetter = 3;
+  // TODO: uncomment this after done testing
+  // var numLetter = Math.floor((Math.random() * 5) + 3);
+  var numLetter = 3;
   for(index=0; index < numLetter; index++){
     temp = String.fromCharCode(97 + Math.floor(Math.random()*26));
     array.push(temp.toUpperCase());
@@ -94,6 +94,8 @@ var list_phrase=[];
 // to keep track of sockets
 var connected_sockets = [];
 
+var game_in_progress = "false";
+
 // uncomment the below if you need to keep track of users connected to the server
 // var connected_users = [];
 
@@ -102,12 +104,17 @@ io.sockets.on("connection", function (socket) {
   connected_sockets.push(socket);
   
   socket.on("start_new_game", function () {
-    // create a game instance
+    // check if there is a game already in progress
+    if (game_in_progress === "true") {
+      socket.emit("game_started", {game_in_progress: "true"});
+    } else {
+      game_in_progress = "true";
+      list_phrase = [];
+      connected_sockets.forEach(function (sock) {
+        sock.emit("game_started", {game_in_progress: "false"});
+      });  
+    }
     
-    list_phrase = [];
-    connected_sockets.forEach(function (sock) {
-      sock.emit("game_started");
-    });
   });
 
 

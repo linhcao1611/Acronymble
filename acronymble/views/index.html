@@ -78,6 +78,7 @@
 
       <div class="game" id="startGame" ng-controller="start_game">
         <div id="start"><button class="btn btn-primary btn-lg" ng-click="start()">Start Game</button></div>
+        <div id="gameInProgress" class="ng-hide"> <h2>There is a game in progress</h2></div>
         <div id="join" class="ng-hide"> 
           <h2>New Game has Started </h2>
           <button class="btn btn-primary btn-lg" ng-click="join('<%= current_user.username%>')">Join Game</button>
