@@ -18,9 +18,15 @@ var main = function () {
         }
 
         socket.on("game_started", function (data) {
-            console.log("received game_started event from server");
-            angular.element(document.querySelector("#start")).addClass("ng-hide");
-            angular.element(document.querySelector("#join")).removeClass("ng-hide");                                  
+            console.log("received game_started event from server, data: " + data.game_in_progress);
+            if (data.game_in_progress === "false"){
+                angular.element(document.querySelector("#start")).addClass("ng-hide");
+                angular.element(document.querySelector("#join")).removeClass("ng-hide");    
+            } else {
+                angular.element(document.querySelector("#start")).addClass("ng-hide");
+                angular.element(document.querySelector("#gameInProgress")).removeClass("ng-hide");
+            }  
+                                              
         });
 
         $scope.join = function (user) {
@@ -36,8 +42,8 @@ var main = function () {
             $scope.users_joined.push(data);
             $scope.$apply();
             // wait for 10 s for other users to join after 3 players join, after which send the acronym
-            // DONE change this back to 3 before the demo
-            if ($scope.users_joined.length >= 3) {
+            // TODO: change this back to 3 before submission
+            if ($scope.users_joined.length >= 2) {
                 setTimeout(function() { 
                     // console.log($scope.users_joined.length + " joined the game");
                     if (!$scope.acronym) {
@@ -58,7 +64,7 @@ var main = function () {
                 angular.element(document.querySelector("#addPhraseForm")).removeClass("ng-hide");
                 acronym = $scope.acronym;
             }
-            // TODO: consider moving this to server since it could happen that multiple clients start timers and emit the event
+            
             // start the game timer for 60s
             if (!game_timer_started) {
                 game_timer_started = true;
@@ -92,6 +98,7 @@ var main = function () {
             $scope.acronym_message = "";
             $scope.users_joined = [];
             game_timer_started = false;
+            angular.element(document.querySelector("#gameInProgress")).addClass("ng-hide");
         });
         
     });
