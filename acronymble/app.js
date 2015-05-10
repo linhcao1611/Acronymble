@@ -97,11 +97,12 @@ var connected_sockets = [];
 var game_in_progress = "false";
 
 // uncomment the below if you need to keep track of users connected to the server
-// var connected_users = [];
+var connected_users = [];
 
 // Event handlers
 io.sockets.on("connection", function (socket) {
   connected_sockets.push(socket);
+  connected_users.push(socket.handshake.query.userName);
   
   socket.on("start_new_game", function () {
     // check if there is a game already in progress
@@ -232,6 +233,15 @@ io.sockets.on("connection", function (socket) {
 
   socket.on("sendChat", function(message, username){
     socket.broadcast.emit("recieveMessage", message, username);
+  });
+
+  socket.on("sendWhisper", function(target, message, username){
+    console.log(target);
+    console.log(message);
+    var i = connected_users.indexOf(target);
+    if(i !== -1){
+      connected_sockets[i].emit("recieveWhisper", message, username);
+    }
   });
 
 });

@@ -6,8 +6,8 @@ var main = function () {
 
     var acronym = "";
     var game_timer_started = false;    
-
-    socket = io.connect("http://localhost:3000");
+ 
+    socket = io.connect("http://localhost:3000", {query:"userName="+$(".username").text()});
 // TODO: consider the case of a user loggin in while a game is in progress
     app.controller("start_game", function ($scope, $http) {
         $scope.users_joined = [];
@@ -216,15 +216,33 @@ var main = function () {
         $scope.messages = [];
         $scope.addMessage = function(username){
             if($scope.message !== undefined && $scope.message !== ""){
-                console.log($scope.message);
-                socket.emit("sendChat",$scope.message, username);
-                $scope.messages.push(username + ": " + $scope.message);
+                var messageArray = $scope.message.split(" ");
+                var message = "";
+                if(messageArray[0] === "/w"){
+                    if (messageArray.length > 2){
+                        var count = 2;
+                        while (count < messageArray.length){
+                            message += messageArray[count];
+                            count++;
+                        }
+                        socket.emit("sendWhisper", messageArray[1], message, username);
+                        $scope.messages.push("To " + messageArray[1] + ": " + message);
+                    }
+                }else{   
+                    socket.emit("sendChat",$scope.message, username);
+                    $scope.messages.push(username + ": " + $scope.message);
+                }
             }
             $scope.message = "";
         };
 
         socket.on("recieveMessage", function(message, username){
             $scope.messages.push(username + ": " + message);
+            $scope.$apply();
+        });
+
+        socket.on("recieveWhisper", function(message, username){
+            $scope.messages.push(username + " whispers: " + message);
             $scope.$apply();
         });
     });
