@@ -242,6 +242,21 @@ io.sockets.on("connection", function (socket) {
     }
   });
 
+  socket.on("disconnect", function(data) {
+    var index = connected_sockets.indexOf(socket);
+    console.log("disconnect event, # of sockets: " + connected_sockets.length);
+    if (index > -1) {
+      connected_sockets.splice(index,1);
+    }
+
+    console.log("after splice, # of sockets: " + connected_sockets.length);
+
+    if (connected_sockets.length <= 1) {
+      game_in_progress = "false";
+    }
+    
+  });
+
 });
 
 // catch 404 and forward to error handler
