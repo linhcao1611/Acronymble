@@ -29,7 +29,7 @@ router.post("/new", function (req, res) {
 		if (err) {
 			console.log("error saving user : " + err);
 		}
-		console.log("new user : " + new_user);
+		// console.log("new user : " + new_user);
 		//fill the new users session
 		req.session.current_user = new_user;
 		return res.redirect("/");
@@ -39,7 +39,7 @@ router.post("/new", function (req, res) {
 // login user
 router.post("/login", function (req, res) {
 	// validate user, fill session, redirect to index
-	console.log(req.body.username);
+	// console.log(req.body.username);
 	User.findOne({username: req.body.username, password: req.body.password}, function (err, user) {
 		if (err || !user) {
 			console.log("user not found");

@@ -109,7 +109,6 @@ io.sockets.on("connection", function (socket) {
       socket.emit("game_started", {game_in_progress: "true"});
     } else {
       game_in_progress = "true";
-      list_phrase = [];
       connected_sockets.forEach(function (sock) {
         sock.emit("game_started", {game_in_progress: "false"});
       });  
@@ -218,11 +217,14 @@ io.sockets.on("connection", function (socket) {
         sock.emit("winner", winner);
       });
     }
+    // game is over
+    game_in_progress = "false";
   }); // end vote_ended
   
   socket.on("another_game_started", function () {
-    console.log("another_game_started");
+    // console.log("another_game_started");
     list_phrase = [];
+    game_in_progress = "true";
     connected_sockets.forEach(function (sock) {
       sock.emit("server_another_game_started");
     });
