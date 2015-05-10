@@ -84,7 +84,7 @@
           <button class="btn btn-primary btn-lg" ng-click="join('<%= current_user.username%>')">Join Game</button>
         </div>
         <div id="joined_users_list">
-          <ul ng-repeat="user in users_joined">
+          <ul ng-repeat="user in users_joined track by $index">
               <li> {{ user }} joined the game</li>
           </ul>
           <p> {{acronym_message}} {{ acronym }}  {{timer}}</p>
@@ -117,7 +117,7 @@
 
       <div ng-controller="voting" id="voting" class="ng-hide">
         <p>{{timer}}</p>
-        <ul ng-repeat="phrase in phrases" >
+        <ul ng-repeat="phrase in phrases track by $index" >
           <li>Phrase: {{phrase.phrase}} - By: {{phrase.author}} - Number of Votes: {{phrase.vote}} </li>
           <button id="vote_btn" ng-click="vote(phrase.author)">Vote</button> 
         </ul>
@@ -140,7 +140,7 @@
     <!-- Chat -->
     <div class="chat" ng-controller="chat_controller">
         <h1>chat</h1>
-        <p>Whisper using /w 'Name' 'Message'</p>
+        <p>Note: Whisper using /w 'Name' 'Message'</p>
         <ul ng-repeat="element in messages track by $index">
           <li>{{element}}</li>
         </ul>

@@ -97,16 +97,16 @@ var connected_sockets = [];
 var game_in_progress = "false";
 
 // uncomment the below if you need to keep track of users connected to the server
-var connected_users = [];
+// var connected_users = [];
 
 var user_sockets = {};
 
 // Event handlers
 io.sockets.on("connection", function (socket) {
   connected_sockets.push(socket);
-  connected_users.push(socket.handshake.query.userName);
+  // connected_users.push(socket.handshake.query.userName);
+  
   user_sockets[socket.handshake.query.userName] = socket;
-  console.log(user_sockets);
   
   socket.on("start_new_game", function () {
     // check if there is a game already in progress
@@ -123,15 +123,10 @@ io.sockets.on("connection", function (socket) {
 
 
   socket.on("join_game", function (data) {
-    // uncomment the below if you need to keep track of users connected to the server
-    // connected_users.push(data);
-    // console.log("join_game, received from client: " + data);
-
     connected_sockets.forEach(function (sock) {
       sock.emit("user_joined_game", data);
     });
-    // socket.emit("user_joined_game", data);
-    // socket.broadcast.emit("user_joined_game", data);
+    
   });
 
   socket.on("generate_acronym", function () {
@@ -240,23 +235,31 @@ io.sockets.on("connection", function (socket) {
   });
 
   socket.on("sendWhisper", function(target, message, username){
-    var i = connected_users.indexOf(target);
-    if(i !== -1){
-      connected_sockets[i].emit("recieveWhisper", message, username);
-    }else{
+
+    if (user_sockets[target]) {
+      user_sockets[target].emit("recieveWhisper", message, username);
+    } else {
       socket.emit("notFound", target);
     }
   });
 
-  socket.on("disconnect", function(data) {
+  socket.on("disconnect", function() {
     var index = connected_sockets.indexOf(socket);
-    console.log("disconnect event, # of sockets: " + connected_sockets.length);
+    
     if (index > -1) {
       connected_sockets.splice(index,1);
     }
 
-    console.log("after splice, # of sockets: " + connected_sockets.length);
+    // might not be needed anymore
+    // var user = socket.handshake.query.userName;
+    // if (user_sockets[user]) {
+    //   delete user_sockets[user];
+    // }
 
+    console.log("disconnect, # of sockets: " + connected_sockets.length);
+
+    // can also emit user left the game event to other users
+    
     if (connected_sockets.length <= 1) {
       game_in_progress = "false";
     }
