@@ -236,8 +236,6 @@ io.sockets.on("connection", function (socket) {
   });
 
   socket.on("sendWhisper", function(target, message, username){
-    console.log(target);
-    console.log(message);
     var i = connected_users.indexOf(target);
     if(i !== -1){
       connected_sockets[i].emit("recieveWhisper", message, username);

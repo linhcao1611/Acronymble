@@ -222,7 +222,7 @@ var main = function () {
                     if (messageArray.length > 2){
                         var count = 2;
                         while (count < messageArray.length){
-                            message += messageArray[count];
+                            message += messageArray[count] + " ";
                             count++;
                         }
                         socket.emit("sendWhisper", messageArray[1], message, username);
