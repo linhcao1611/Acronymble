@@ -245,6 +245,11 @@ var main = function () {
             $scope.messages.push(username + " whispers: " + message);
             $scope.$apply();
         });
+
+        socket.on("notFound", function(target){
+            $scope.messages.push("User " + target + " not found");
+            $scope.$apply();
+        });
     });
     
     // in case we need the username here, we can retrieve it as below
