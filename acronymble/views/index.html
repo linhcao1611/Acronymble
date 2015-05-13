@@ -44,9 +44,9 @@
           <ul class="nav navbar-nav navbar-right">
           
 
-            <li> <p class="navbar-text">Score    :<%= current_user.score %></p></li>
-            <li> <p class="navbar-text">Rank     :<%= current_user.rank %></p></li>
-            <li> <p class="navbar-text">username : <%= current_user.username%></p></li>
+            <li> <p class="navbar-text">Score    : <%= current_user.score %> </p> </li>
+            <li> <p class="navbar-text">Rank     : <%= current_user.rank %>  </p> <img src="/Images/<%= current_user.rank %>.png" height="53" width="38"> </li>
+            <li> <p class="navbar-text">Welcome  : <%= current_user.username%> </p> </li>
             
             
             <li><a href="/users/logout"> Logout</a></li>
