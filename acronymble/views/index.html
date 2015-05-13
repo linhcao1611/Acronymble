@@ -43,9 +43,10 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
           
-            <li><a href="#" <span class="Score">Score <%= current_user.score %></span></a>
-            <li><a href="#" <span class="Rank"><%= current_user.rank %></span></a>
-            <li><a href="#" <span class="username"><%= current_user.username%></span></a>
+
+            <li> <p class="navbar-text">Score    :<%= current_user.score %></p></li>
+            <li> <p class="navbar-text">Rank     :<%= current_user.rank %></p></li>
+            <li> <p class="navbar-text">username : <%= current_user.username%></p></li>
             
             
             <li><a href="/users/logout"> Logout</a></li>
