@@ -149,7 +149,7 @@ var main = function () {
 
     app.controller("voting", function($scope){
         $scope.phrases = [];
-        
+        $scope.myVal = 0;
         
         socket.on("vote_started", function(data){
             angular.element(document.querySelector("#voting")).removeClass("ng-hide");
@@ -180,7 +180,9 @@ var main = function () {
         });
 
         $scope.vote = function(author){
-            socket.emit("voted_phrase", author);            
+            socket.emit("voted_phrase", author);
+            angular.element(document.querySelector(".vote_btn")).addClass("ng-hide");   
+            $scope.myVal=1;         
         }
 
         socket.on("update_vote", function(data){
@@ -203,7 +205,9 @@ var main = function () {
         socket.on("server_another_game_started", function() {
             $scope.phrases = [];
             $scope.winner = "";
+            $scope.myVal=0;
             $scope.$apply();
+
             angular.element(document.querySelector("#voting")).addClass("ng-hide");
             angular.element(document.querySelector("#playGame")).addClass("ng-hide");
             angular.element(document.querySelector("#join")).removeClass("ng-hide");

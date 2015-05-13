@@ -120,7 +120,7 @@
         <p>{{timer}}</p>
         <ul ng-repeat="phrase in phrases track by $index" >
           <li>Phrase: {{phrase.phrase}} - By: {{phrase.author}} - Number of Votes: {{phrase.vote}} </li>
-          <button id="vote_btn" ng-click="vote(phrase.author)">Vote</button> 
+          <button id="vote_btn" ng-click="vote(phrase.author)" ng-hide="myVal">Vote</button> 
         </ul>
 
 
