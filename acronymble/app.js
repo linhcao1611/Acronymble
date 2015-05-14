@@ -91,6 +91,10 @@ function update_rank(score)
 var list_phrase=[];
 
 
+// a variable to keep a new score for players
+//var players_list=[];
+var winner;
+
 // to keep track of sockets
 var connected_sockets = [];
 
@@ -139,8 +143,9 @@ io.sockets.on("connection", function (socket) {
 
 
   socket.on("add_phrase", function(data){
-    list_phrase.push({author: data.user, phrase: data.phrase, vote:0});
-    // console.log(list_phrase);
+    list_phrase.push({author: data.user, phrase: data.phrase, id:data.id, vote:0});
+    console.log("list when add a new phrase");
+    console.log(list_phrase);
     socket.broadcast.emit("phrase_added", data);
   });
 
@@ -166,22 +171,43 @@ io.sockets.on("connection", function (socket) {
   });
 
   socket.on("vote_ended", function() {
+      console.log("list when vote end");
+      console.log(list_phrase);
+
+
     if (list_phrase.length > 0) {
       // loop through list_phrase to find the winner
-      var winner = list_phrase[0], i;
+      var i;
+      winner = list_phrase[0];
       for(i=1;i<list_phrase.length;i++){
         if(winner.vote < list_phrase[i].vote){
           winner = list_phrase[i];
         }
+
       }// end for
 
-      // update score for winner
+
+      //console.log(players_list[0].name);
+     // players_list=[];
+      connected_sockets.forEach(function(sock){
+        sock.emit("winner", winner);
+      });
+    }
+    // game is over
+    game_in_progress = "false";
+  }); // end vote_ended
+  
+
+function updateScore(){
+  // update score for winner
       User.findOne({username: winner.author}, function(err, result){
         if(err){
           console.log(err);
         } else{
           result.score += 5;
           result.rank = update_rank(result.score);
+          //players_list.push({id:winner.id ,name: result.username, score: result.score, rank:result.rank});
+          //players_list.push({id: 123, name: "linh"});
           result.save(function(err){
             if(err){
               console.log(err);
@@ -192,7 +218,7 @@ io.sockets.on("connection", function (socket) {
         }
       });
 
-
+      var i;
       for(i=0;i<list_phrase.length;i++){
         if(list_phrase[i].author !== winner.author){
           User.findOne({username: list_phrase[i].author}, function(err, result){
@@ -201,6 +227,8 @@ io.sockets.on("connection", function (socket) {
             } else{
               result.score += 1;
               result.rank = update_rank(result.score);
+              //players_list.push({id:list_phrase[i].id ,name: result.username, score: result.score, rank:result.rank});
+              //players_list.push({id: 123, name: "linh"});
               result.save(function(err){
                 if(err){
                   console.log(err);
@@ -212,17 +240,12 @@ io.sockets.on("connection", function (socket) {
           });
         }
       }
+};
 
-      connected_sockets.forEach(function(sock){
-        sock.emit("winner", winner);
-      });
-    }
-    // game is over
-    game_in_progress = "false";
-  }); // end vote_ended
-  
+
   socket.on("another_game_started", function () {
     // console.log("another_game_started");
+    updateScore();
     list_phrase = [];
     game_in_progress = "true";
     connected_sockets.forEach(function (sock) {
